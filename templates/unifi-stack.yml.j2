@@ -14,6 +14,10 @@ services:
       MONGO_PASS: /run/secrets/unifi_mongo_pass
       MONGO_DBNAME: '{{ unifi_db_defaults_db }}'
       MONGO_AUTHSOURCE: 'admin'
+    secrets:
+      - unifi_mongo_user
+      - unifi_mongo_pass
+      - unifi_mongo_root_pass
     ports:
       - target: {{ unifi_db_defaults_ports_cont }}
         published: {{ unifi_db_defaults_ports_host }}
@@ -51,6 +55,9 @@ services:
       MONGO_AUTHSOURCE: 'admin'
       MEM_LIMIT: '1024'
       MEM_STARTUP: '1024'
+    secrets:
+      - unifi_mongo_user
+      - unifi_mongo_pass
     ports:
       - target: {{ unifi_defaults_ports_cont }}
         published: {{ unifi_defaults_ports_host }}
