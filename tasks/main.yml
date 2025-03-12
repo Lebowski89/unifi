@@ -1,0 +1,94 @@
+---
+
+################################
+# CLEAN UP
+################################
+
+- name: Remove requests stack
+  community.docker.docker_stack:
+    name: unifi
+    state: absent
+
+################################
+# SUB-TASKS
+################################
+
+- name: Create unifi directory
+  ansible.builtin.file:
+    path: '{{ unifi_defaults_location }}'
+    state: directory
+    owner: '{{ puid }}'
+    group: '{{ pgid }}'
+    mode: '0755'
+
+- name: Create database directory
+  ansible.builtin.file:
+    path: '{{ unifi_db_defaults_location }}'
+    state: directory
+    owner: '{{ puid }}'
+    group: '{{ pgid }}'
+    mode: '0755'
+
+- name: Check if init-mongo script exists
+  ansible.builtin.stat:
+    path: '{{ unifi_db_defaults_location }}/init-mongo.sh'
+  register: unifi_mongo_sh
+
+- name: Conduct database tasks
+  when: not unifi_mongo_sh.stat.exists
+  block:
+    - name: Copy init-mongo script
+      ansible.builtin.copy:
+        src: '{{ role_path }}/files/init-mongo.sh'
+        dest: '{{ unifi_db_defaults_location }}/init-mongo.sh'
+        owner: '{{ puid }}'
+        group: '{{ pgid }}'
+        mode: '0775'
+
+    - name: Wait for init-mongo script
+      ansible.builtin.wait_for:
+        path: '{{ unifi_db_defaults_location }}/init-mongo.sh'
+        state: present
+
+################################
+# DEPLOY
+################################
+
+- name: Prepare relevant docker secrets
+  block:
+    - name: Unifi db user secret
+      community.docker.docker_secret:
+        name: unifi_mongo_user
+        data: '{{ unifi_db_user }}'
+        state: present
+
+    - name: Unifi db password secret
+      community.docker.docker_secret:
+        name: unifi_mongo_pass
+        data: '{{ unifi_db_pass }}'
+        state: present
+
+    - name: Unifi db root password secret
+      community.docker.docker_secret:
+        name: unifi_mongo_root_pass
+        data: '{{ unifi_db_root_pass }}'
+        state: present
+
+- name: Import unifi-stack file
+  ansible.builtin.template:
+    src: '{{ role_path }}/templates/unifi-stack.yml.j2'
+    dest: /opt/unifi-stack.yml
+    force: true
+    mode: '0664'
+
+- name: Deploy unifi stack
+  community.docker.docker_stack:
+    state: present
+    name: unifi
+    compose:
+      - /opt/unifi-stack.yml
+
+- name: Remove unifi-stack file
+  ansible.builtin.file:
+    path: /opt/unifi-stack.yml
+    state: absent

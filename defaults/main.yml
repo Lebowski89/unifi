@@ -1,0 +1,37 @@
+---
+
+################################
+# BASICS
+################################
+
+unifi_defaults_name: 'unifi-network-application'
+unifi_defaults_image_repo: 'lscr.io/linuxserver/unifi-network-application'
+unifi_defaults_image_tag: 'latest'
+
+unifi_db_defaults_name: 'unifi-db'
+unifi_db_defaults_image_repo: 'docker.io/mongo'
+unifi_db_defaults_image_tag: '4.4'
+
+################################
+# PATHS
+################################
+
+unifi_defaults_location: '/opt/unifi'
+
+unifi_db_defaults_location: '{{ unifi_defaults_location }}/db'
+
+################################
+# PORTS
+################################
+
+unifi_defaults_ports_host: '8443'
+unifi_defaults_ports_cont: '8443'
+
+unifi_db_defaults_ports_host: '27017'
+unifi_db_defaults_ports_cont: '27017'
+
+################################
+# DATABASE
+################################
+
+unifi_db_defaults_db: 'unifi-db'
