@@ -9,15 +9,15 @@ services:
     environment:
       TZ: '{{ timezone }}'
       MONGO_INITDB_ROOT_USERNAME: 'root'
-      MONGO_INITDB_ROOT_PASSWORD: /run/secrets/unifi_mongo_root_pass
-      MONGO_USER: /run/secrets/unifi_mongo_user
-      MONGO_PASS: /run/secrets/unifi_mongo_pass
+      MONGO_INITDB_ROOT_PASSWORD: /run/secrets/unifi_root_pass_secret
+      MONGO_USER: /run/secrets/unifi_user_secret
+      MONGO_PASS: /run/secrets/unifi_pass_secret
       MONGO_DBNAME: '{{ unifi_db_defaults_db }}'
       MONGO_AUTHSOURCE: 'admin'
     secrets:
-      - unifi_mongo_user
-      - unifi_mongo_pass
-      - unifi_mongo_root_pass
+      - unifi_user_secret
+      - unifi_pass_secret
+      - unifi_root_pass_secret
     ports:
       - target: {{ unifi_db_defaults_ports_cont }}
         published: {{ unifi_db_defaults_ports_host }}
@@ -49,15 +49,15 @@ services:
       TZ: '{{ timezone }}'
       MONGO_DBNAME: '{{ unifi_db_defaults_db }}'
       MONGO_HOST: '{{ unifi_db_defaults_name }}'
-      MONGO_USER: /run/secrets/unifi_mongo_user
-      MONGO_PASS: /run/secrets/unifi_mongo_pass
+      MONGO_USER: /run/secrets/unifi_user_secret
+      MONGO_PASS: /run/secrets/unifi_pass_secret
       MONGO_PORT: '{{ unifi_db_defaults_ports_cont }}'
       MONGO_AUTHSOURCE: 'admin'
       MEM_LIMIT: '1024'
       MEM_STARTUP: '1024'
     secrets:
-      - unifi_mongo_user
-      - unifi_mongo_pass
+      - unifi_user_secret
+      - unifi_pass_secret
     ports:
       - target: {{ unifi_defaults_ports_cont }}
         published: {{ unifi_defaults_ports_host }}
@@ -105,11 +105,11 @@ networks:
     external: true
 
 secrets:
-  unifi_mongo_user:
+  unifi_user_secret:
     external: true
 
-  unifi_mongo_pass:
+  unifi_pass_secret:
     external: true
 
-  unifi_mongo_root_pass:
+  unifi_root_pass_secret:
     external: true

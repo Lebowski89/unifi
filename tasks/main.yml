@@ -58,19 +58,19 @@
   block:
     - name: Unifi db user secret
       community.docker.docker_secret:
-        name: unifi_mongo_user
+        name: unifi_user_secret
         data: '{{ unifi_db_user }}'
         state: present
 
     - name: Unifi db password secret
       community.docker.docker_secret:
-        name: unifi_mongo_pass
+        name: unifi_pass_secret
         data: '{{ unifi_db_pass }}'
         state: present
 
     - name: Unifi db root password secret
       community.docker.docker_secret:
-        name: unifi_mongo_root_pass
+        name: unifi_root_pass_secret
         data: '{{ unifi_db_root_pass }}'
         state: present
 
