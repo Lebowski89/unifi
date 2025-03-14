@@ -10,7 +10,7 @@ unifi_defaults_image_tag: 'latest'
 
 unifi_db_defaults_name: 'unifi-db'
 unifi_db_defaults_image_repo: 'docker.io/mongo'
-unifi_db_defaults_image_tag: '4.4'
+unifi_db_defaults_image_tag: '7.0'
 
 ################################
 # PATHS
